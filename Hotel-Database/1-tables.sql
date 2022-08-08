@@ -1,4 +1,4 @@
-drop database Hotel;
+use HotelDatabase;
 
 create table JobType (
   JobTypeID int identity(1,1)
@@ -7,7 +7,6 @@ create table JobType (
   MontlySalary decimal(11,2) not null  
 );
 
-drop table JobType;
 select * from JobType;
 
 create table Hotel (
@@ -23,11 +22,9 @@ create table Hotel (
     constraint Hotel_U_Address unique (Address, PostCode, City, Country) 
 );
 
-drop table Hotel;
 
 select * from Hotel;
 
-insert into Hotel values ('Creaky Cabin', 'Legion Rd 24', '47006', 'Ballstown, Indiana', 'USA', 2);
 
 
 create table Employee (
