@@ -44,9 +44,7 @@ create table Employee (
   Started date not null
 );
 
-
 select * from Employee;
-drop table Employee;
 
 
 create table RoomType (
@@ -63,12 +61,12 @@ select * from RoomType;
 create table Room (
   RoomID int identity(1,1)
     constraint Room_PK primary key,
-  RoomTypeID int
-    constraint Room_FK_RoomType references RoomType(RoomTypeID)
-      on delete set null,
   HotelID int not null
     constraint Room_FK_Hotel references Hotel(HotelID)
       on delete cascade,
+  RoomTypeID int
+    constraint Room_FK_RoomType references RoomType(RoomTypeID)
+      on delete set null,
 );
 
 select * from Room;
@@ -89,8 +87,7 @@ create table Guest (
   constraint Guest_NN_EmailPhone 
     check (Email is not null or Phone is not null)
 );
-drop table Reservation;
-drop table Guest;
+
 select * from Guest;
 
 create table Reservation (
@@ -117,10 +114,12 @@ create table Bill (
   ReservationID int not null
     constraint Bill_FK_Reservation references Reservation(ReservationID)
       on delete cascade,
-  --TODO Automaticky vytvořit ten roomcharge 
-  RoomCharge decimal(11,2) not null,
   PaymentType char(4) not null
     constraint Bill_CHK_PaymentType
       check (PaymentType in ('Cash', 'Card')),
-  PaymentDate datetime
-)
+  PaymentDate datetime,   -- if null, the bill wasn't payed yet
+  RoomCharge decimal(11,2)
+);
+
+
+drop table Bill;
