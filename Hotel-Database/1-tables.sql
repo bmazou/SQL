@@ -90,6 +90,17 @@ create table Guest (
 
 select * from Guest;
 
+create table Board (
+  BoardID int identity(1,1)
+    constraint Board_PK primary key,
+  Type varchar(13) unique not null
+    constraint Board_CHK_Type
+      check (Type in ('Full', 'Half', 'None', 'All Inclusive')),
+  PricePerDay decimal(10,2) not null
+);
+select * from Board;
+
+
 create table Reservation (
   ReservationID int identity(1,1)
     constraint Reservation_PK primary key,
@@ -99,6 +110,9 @@ create table Reservation (
   GuestID int not null
     constraint Reservation_FK_Guest references Guest(GuestID)
      on delete cascade,
+  BoardID int not null
+    constraint Reservation_FK_Board references Board(BoardID)
+      on delete cascade,
   StartDate date not null,
   EndDate date not null,
   NumOfGuests smallint not null,
@@ -117,9 +131,10 @@ create table Bill (
   PaymentType char(4) not null
     constraint Bill_CHK_PaymentType
       check (PaymentType in ('Cash', 'Card')),
-  PaymentDate datetime,   -- if null, the bill wasn't payed yet
-  RoomCharge decimal(11,2)
+  PaymentDate datetime,   -- if null, the bill hasn't been payed yet
+  RoomCharge decimal(11,2),
+  BoardCharge decimal(11,2)
 );
 
 
-drop table Bill;
+
