@@ -55,7 +55,6 @@ drop trigger aft_ins_Bill_calculate_charge;
 
 
 -- Trigger will check whether the reserved room is free during the reserving dates
---TODO Teď jen udělat, že pokud je to mezi kterymkoliv s těch datů, tak rollbacknout
 create trigger bef_ins_Res_chk_room_free
   on Reservation
     after insert, update
@@ -80,6 +79,7 @@ as
         on res.RoomID = i.RoomID
     where res.ReservationID = @ReservationID
 
+  --TODO Ošéfovat to rollback transcation a throw error. Pak otestovat jestli to funguje
     if (Inserted.StartDate between @StartDate and @EndDate)       -- StartDate is during reserved time
     or (Inserted.EndDate between @StartDate and @EndDate)         -- EndDate is during reserved time
     or (Inserted.StartDate < @StartDate and Inserted.EndDate > @EndDate)  -- Room already reserved during desired time
