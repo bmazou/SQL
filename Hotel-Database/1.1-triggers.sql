@@ -80,6 +80,14 @@ as
         on res.RoomID = i.RoomID
     where res.ReservationID = @ReservationID
 
+    if (Inserted.StartDate between @StartDate and @EndDate)       -- StartDate is during reserved time
+    or (Inserted.EndDate between @StartDate and @EndDate)         -- EndDate is during reserved time
+    or (Inserted.StartDate < @StartDate and Inserted.EndDate > @EndDate)  -- Room already reserved during desired time
+    begin
+    ROLLBACK TRANSACTION
+    THROW 60000, 'Room is already reserved during desired time', 0
+    end
+
     insert into TestDate values (@ReservationID, @StartDate, @EndDate)
 
     fetch next from ReservationCursor into @ReservationID
@@ -90,8 +98,10 @@ as
 go;
 
 drop trigger bef_ins_Res_chk_room_free;
-
+select * from Reservation;
 insert into TestDate values (@StartDate);
+
+
 
 create table TestDate (ReservationID int, StartDate date, EndDate date);
 delete from TestDate;
