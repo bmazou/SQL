@@ -79,7 +79,7 @@ as
         on res.RoomID = i.RoomID
     where res.ReservationID = @ReservationID
 
-  --TODO Ošéfovat to rollback transcation a throw error. Pak otestovat jestli to funguje
+  --TODO Ošéfovat to rollback transcation a throw error. Pak otestovat jestli to funguje 
     if (Inserted.StartDate between @StartDate and @EndDate)       -- StartDate is during reserved time
     or (Inserted.EndDate between @StartDate and @EndDate)         -- EndDate is during reserved time
     or (Inserted.StartDate < @StartDate and Inserted.EndDate > @EndDate)  -- Room already reserved during desired time
