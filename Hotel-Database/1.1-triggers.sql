@@ -57,51 +57,63 @@ drop trigger aft_ins_Bill_calculate_charge;
 -- Trigger will check whether the reserved room is free during the reserving dates
 create trigger bef_ins_Res_chk_room_free
   on Reservation
-    after insert, update
+    for insert, update
 as
   declare @StartDate date
   declare @EndDate date
-  declare @ReservationID int
+  declare @InsertedReservationID int
+  declare @InsertedRoomID int
+  declare @InsertedStartDate date
+  declare @InsertedEndDate date
+  declare @ConflictingReservationID int
 
   declare ReservationCursor cursor for
-  select ReservationID
+  select ReservationID, RoomID, StartDate, EndDate
   from Inserted
 
   open ReservationCursor
-  fetch next from ReservationCursor into @ReservationID
+  fetch next from ReservationCursor into @InsertedReservationID, @InsertedRoomID, @InsertedStartDate, @InsertedEndDate
 
   while @@FETCH_STATUS = 0
   begin
-    select @StartDate = res.StartDate, 
-          @EndDate = res.EndDate
-    from Inserted as i
-      join Reservation as res
-        on res.RoomID = i.RoomID
-    where res.ReservationID = @ReservationID
-
-  --TODO Ošéfovat to rollback transcation a throw error. Pak otestovat jestli to funguje 
-    if (Inserted.StartDate between @StartDate and @EndDate)       -- StartDate is during reserved time
-    or (Inserted.EndDate between @StartDate and @EndDate)         -- EndDate is during reserved time
-    or (Inserted.StartDate < @StartDate and Inserted.EndDate > @EndDate)  -- Room already reserved during desired time
+    if exists (
+      -- Looks at reservations reserving same room as inserted reservation
+      -- If reservation dates conflict, it selects
+      select *
+      from Reservation
+      where ReservationID <> @InsertedReservationID and -- Not the same resarvation 
+        RoomId = @InsertedRoomID and ( -- Same room 
+        @InsertedStartDate between StartDate and EndDate or -- InsertedStartDate is between dates of some reservation 
+        @InsertedEndDate between StartDate and EndDate or -- InsertedEndDate is between dates of some reservation 
+        (@InsertedStartDate < StartDate and @InsertedEndDate > EndDate) -- Some reservation is between InsertedDates
+        )
+    )
     begin
-    ROLLBACK TRANSACTION
-    THROW 60000, 'Room is already reserved during desired time', 0
+      insert into TestDate values (@InsertedReservationID, @InsertedStartDate, @InsertedEndDate)
+      ROLLBACK TRANSACTION
+      declare @Message nvarchar(255)
+      set @Message = N'Error at reservation: ' + cast(@InsertedReservationID as varchar(12)) + ' . Room is already reserved during desired time';
+      THROW 60000, @Message, 0;
     end
 
-    insert into TestDate values (@ReservationID, @StartDate, @EndDate)
-
-    fetch next from ReservationCursor into @ReservationID
+    fetch next from ReservationCursor into @InsertedReservationID, @InsertedRoomID, @InsertedStartDate, @InsertedEndDate;
   end
-  
-  close ReservationCursor
-      
+
+  close ReservationCurso
 go;
 
 drop trigger bef_ins_Res_chk_room_free;
 select * from Reservation;
 insert into TestDate values (@StartDate);
+select *from TestDate
 
+select * from Reservation
 
+select i.StartDate, i.EndDate, res.StartDate, res.EndDate
+from Reservation as i
+  join Reservation as res
+    on res.RoomID = i.RoomID
+where i.ReservationID = 1
 
 create table TestDate (ReservationID int, StartDate date, EndDate date);
 delete from TestDate;
