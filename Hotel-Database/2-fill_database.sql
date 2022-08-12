@@ -48,12 +48,17 @@ select * from Board;
 
 insert into Reservation
 (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
-(1, 2, 3, '2022-09-08', '2022-09-13', 1),
+(1, 2, 1, '2021-09-05', '2022-09-10', 2),
 (1, 1, 1, '2022-02-02', '2022-02-05', 3),
+(1, 2, 3, '2022-09-08', '2022-09-13', 1),
 (3, 2, 2,'2022-03-09', '2022-03-14', 5),
 (2, 1, 4, '2022-04-12', '2022-04-22', 2);
 
 select * from Reservation
+delete from Reservation
+DBCC CHECKIDENT ('Reservation', reseed, 0);
+select * from TestDate
+delete from TestDate
 
 insert into Bill
 (ReservationID, PaymentType, PaymentDate) values 
