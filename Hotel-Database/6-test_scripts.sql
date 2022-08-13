@@ -13,6 +13,7 @@ create view EmployeeInfo as
     join JobType as jt
       on e.JobTypeID = jt.JobTypeID;
 
+select * from EmployeeInfo
 drop view EmployeeInfo;
 
 create view CustomerSpendeture as
@@ -24,20 +25,20 @@ create view CustomerSpendeture as
       on res.ReservationID = b.ReservationID
   group by g.GuestID, Concat(g.FirstName, ' ', g.LastName);
 
-select * from CustomerSpendeture order by TotalPayed desc;
+select * from CustomerSpendeture;
 drop view CustomerSpendeture;
 
-select * From Bill
-
-select 
-
-drop view
-
-select * from Reservation
-  
+create view HotelEmployeeExpenditure as
+  select jt.Name as JobName, Count(1) as NumberOfEmployees, sum(jt.MontlySalary) as TotalExpenditure
+  from JobType as jt
+    join Employee as e
+      on e.JobTypeID = jt.JobTypeID
+  group by jt.Name;
 
 
-select * from EmployeeInfo
+select * from HotelEmployeeExpenditure;
+drop view HotelEmployeeExpenditure;
+
 
 create table test (Type varchar(10), Num int)
 

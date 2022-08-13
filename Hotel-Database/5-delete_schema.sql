@@ -3,6 +3,8 @@ use HotelDatabase
 --* Views
 drop view EmployeeInfo;
 drop view CustomerSpendeture;
+drop view HotelEmployeeExpenditure;
+
 
 --* Triggers
 drop trigger aft_ins_Bill_calculate_charge;
