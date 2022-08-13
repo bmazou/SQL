@@ -16,8 +16,11 @@ create view EmployeeInfo as
 select * from EmployeeInfo
 drop view EmployeeInfo;
 
+
+-- View showing guests, how many reservations they made, 
+-- and how much they spent in total
 create view CustomerSpendeture as
-  select g.GuestID as GuestID, Concat(g.FirstName, ' ', g.LastName) as FullName, Count(*) as TotalReservations, Sum(b.RoomCharge) + Sum(b.BoardCharge) as TotalPayed
+  select g.GuestID as GuestID, Concat(g.FirstName, ' ', g.LastName) as FullName, Count(1) as TotalReservations, Sum(b.RoomCharge) + Sum(b.BoardCharge) as TotalPayed
   from Guest as g
     join Reservation as res
       on g.GuestID = res.GuestID
@@ -28,6 +31,8 @@ create view CustomerSpendeture as
 select * from CustomerSpendeture;
 drop view CustomerSpendeture;
 
+-- View showing how many employees of a given type the hotel chain has,
+-- and much it spends on each category
 create view HotelEmployeeExpenditure as
   select jt.Name as JobName, Count(1) as NumberOfEmployees, sum(jt.MontlySalary) as TotalExpenditure
   from JobType as jt
@@ -39,11 +44,3 @@ create view HotelEmployeeExpenditure as
 select * from HotelEmployeeExpenditure;
 drop view HotelEmployeeExpenditure;
 
-
-create table test (Type varchar(10), Num int)
-
-insert into test values (null, null), (2, null); 
-select * from test
-
-select Type * + 
-from test

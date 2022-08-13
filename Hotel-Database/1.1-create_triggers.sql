@@ -99,7 +99,7 @@ as
     fetch next from ReservationCursor into @InsertedReservationID, @InsertedRoomID, @InsertedStartDate, @InsertedEndDate;
   end
 
-  close ReservationCurso
+  close ReservationCursor
 go;
 
 drop trigger bef_ins_Res_chk_room_free;
