@@ -25,8 +25,6 @@ create table Hotel (
 
 select * from Hotel;
 
-
-
 create table Employee (
   EmployeeID int identity(1,1) 
     constraint Employee_PK primary key,
@@ -57,16 +55,15 @@ create table RoomType (
 select * from RoomType;
 
 
---TODO Můžu dát trigger ať to nahlásí systému, pokud se smaže jeho RoomType + ať se ujistí že Room má svůj RoomType
 create table Room (
   RoomID int identity(1,1)
     constraint Room_PK primary key,
   HotelID int not null
     constraint Room_FK_Hotel references Hotel(HotelID)
       on delete cascade,
-  RoomTypeID int
+  RoomTypeID int not null
     constraint Room_FK_RoomType references RoomType(RoomTypeID)
-      on delete set null,
+      on delete cascade,
 );
 
 select * from Room;
@@ -93,11 +90,13 @@ select * from Guest;
 create table Board (
   BoardID int identity(1,1)
     constraint Board_PK primary key,
-  Type varchar(13) unique not null
+  Type varchar(13) not null
+    constraint Board_U_Type unique
     constraint Board_CHK_Type
       check (Type in ('Full', 'Half', 'None', 'All Inclusive')),
   PricePerDay decimal(10,2) not null
 );
+
 select * from Board;
 
 
