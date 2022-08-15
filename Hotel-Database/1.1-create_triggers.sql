@@ -1,7 +1,8 @@
 use HotelDatabase;
 
-
--- Trigger calculating price of stay
+--TODO Můžu ty dva statementy dát do jednoho
+-- Trigger calculating after insert, how much will the room 
+-- and the board cost (for the entire stay)
 create trigger aft_ins_Bill_calculate_charge 
   on Bill 
     for insert
@@ -20,7 +21,9 @@ as
 
   while @@FETCH_STATUS = 0
   begin
-    -- Calculate how much the room will cost
+    -- For clarity, the selects and updates are separated
+
+    -- Calculate how much the room will cost for the entire stay
     select @RoomCharge = datediff(day, res.StartDate, res.EndDate) * rt.PricePerNight
     from Reservation as res
       join Room as r
@@ -55,7 +58,7 @@ drop trigger aft_ins_Bill_calculate_charge;
 
 
 -- Trigger will check whether the reserved room is free during the reserving dates
-create trigger bef_ins_Res_chk_room_free
+create trigger aft_ins_Res_chk_room_free
   on Reservation
     for insert, update
 as
@@ -82,17 +85,16 @@ as
       select *
       from Reservation
       where ReservationID <> @InsertedReservationID and -- Not the same resarvation 
-        RoomId = @InsertedRoomID and ( -- Same room 
+        RoomID = @InsertedRoomID and ( -- Same room 
         @InsertedStartDate between StartDate and EndDate or -- InsertedStartDate is between dates of some reservation 
         @InsertedEndDate between StartDate and EndDate or -- InsertedEndDate is between dates of some reservation 
         (@InsertedStartDate < StartDate and @InsertedEndDate > EndDate) -- Some reservation is between InsertedDates
         )
     )
     begin
-      insert into TestDate values (@InsertedReservationID, @InsertedStartDate, @InsertedEndDate)
       ROLLBACK TRANSACTION
       declare @ErrorMessage nvarchar(255)
-      set @ErrorMessage = N'Error at reservation: ' + cast(@InsertedReservationID as varchar(12)) + ' . Room is already reserved during desired time';
+      set @ErrorMessage = N'Error at reservation: ' + cast(@InsertedReservationID as varchar(12)) + '. Room is already reserved during desired time';
       THROW 60000, @ErrorMessage, 0;
     end
 
@@ -102,13 +104,47 @@ as
   close ReservationCursor
 go;
 
--- drop trigger bef_ins_Res_chk_room_free;
+drop trigger aft_ins_Res_chk_room_free;
 select * from Reservation;
 
 
+-- Check that the number of guests in a reservation doesn't exceed the room capacity
+create trigger aft_ins_Res_chk_enough_capacity
+  on Reservation
+    for insert, update
+as
+  declare @InsertedReservationID int
+  declare @InsertedNumOfGuests int
+  declare @RoomCapacity int
 
+  -- Select ReservationIDs, how many guests are expected, and what 
+  -- the capacity of the room is
+  declare MyCursor cursor for 
+  select i.ReservationID, i.NumOfGuests, rt.capacity
+  from Inserted as i
+    join Room as r
+      on r.RoomID = i.RoomID
+    join RoomType as rt
+      on r.RoomTypeID = rt.RoomTypeID
 
+  open MyCursor
+  fetch next from MyCursor into @InsertedReservationID, @InsertedNumOfGuests, @RoomCapacity
 
+  while @@FETCH_STATUS = 0
+  begin
+    if @InsertedNumOfGuests > @RoomCapacity
+    begin
+      ROLLBACK TRANSACTION
+      declare @ErrorMessage nvarchar(255)
+      set @ErrorMessage = N'Error at reservation: ' + cast(@InsertedReservationID as varchar(12)) + '. Number of guests is ' + cast(@InsertedNumOfGuests as varchar(12)) + ', but maximum room capacity is ' + cast(@RoomCapacity as varchar(12));
+      THROW 60000, @ErrorMessage, 0;
+    end
 
+  fetch next from MyCursor into @InsertedReservationID, @InsertedNumOfGuests, @RoomCapacity
+  end
 
+  close MyCursor
+go;
+
+drop trigger aft_ins_Res_chk_enough_capacity;
 
