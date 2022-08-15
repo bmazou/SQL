@@ -31,7 +31,7 @@ select * from CustomerSpendeture;
 -- View showing how many employees of a given type the hotel chain has,
 -- and much it spends on each category
 create view HotelEmployeeExpenditure as
-  select jt.Name as JobName, Count(1) as NumberOfEmployees, sum(jt.MontlySalary) as TotalExpenditure
+  select jt.Name as JobName, avg(jt.MontlySalary) as JobMontlySalary, Count(1) as NumberOfEmployees, sum(jt.MontlySalary) as JobTotalExpenditure
   from JobType as jt
     join Employee as e
       on e.JobTypeID = jt.JobTypeID
@@ -39,4 +39,7 @@ create view HotelEmployeeExpenditure as
 
 
 select * from HotelEmployeeExpenditure;
+drop view HotelEmployeeExpenditure;
 
+select sum(JobTotalExpenditure) as TotalExpenditure
+from HotelEmployeeExpenditure

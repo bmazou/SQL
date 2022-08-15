@@ -8,6 +8,13 @@ drop view HotelEmployeeExpenditure;
 
 --* Triggers
 drop trigger aft_ins_Bill_calculate_charge;
+drop trigger aft_ins_Res_chk_room_free
+
+--* Procedures
+drop procedure PayBill;
+drop procedure ProjectedExpenditure;
+drop procedure ChangeReservationBoard
+--TODO drop tu funcki
 
 
 --* Tables

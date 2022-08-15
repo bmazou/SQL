@@ -1,11 +1,16 @@
 use HotelDatabase;
 
---TODO Můžu ty dva statementy dát do jednoho
+--TODO Checknout ať ty error čísla dávaj smysl nebo jestli je to jedno
+
+--TODO Možná ten bill tvořit automaticky s rezervací?
+  -- V insertu do reservation budu muset specificovat TypeOfPayment a pak to předat
+  -- A PaymentDate prostě dám teď
+
 -- Trigger calculating after insert, how much will the room 
 -- and the board cost (for the entire stay)
 create trigger aft_ins_Bill_calculate_charge 
   on Bill 
-    for insert
+    for insert, update
 as
   declare @RoomCharge decimal(11,2)
   declare @BoardCharge decimal(11,2)
@@ -22,6 +27,7 @@ as
   while @@FETCH_STATUS = 0
   begin
     -- For clarity, the selects and updates are separated
+    --TODO Můžu ty dva statementy dát do jednoho
 
     -- Calculate how much the room will cost for the entire stay
     select @RoomCharge = datediff(day, res.StartDate, res.EndDate) * rt.PricePerNight

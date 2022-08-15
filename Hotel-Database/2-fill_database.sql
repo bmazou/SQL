@@ -11,8 +11,15 @@ insert into JobType
 
 insert into Employee 
 (HotelID, JobTypeID, FirstName, LastName, Gender, Started) values 
-(1, 1, 'Johnny', 'Mark', 'M', '2008-11-11');
+(1, 1, 'Johnny', 'Mark', 'M', '2021-11-11'),
+(1, 2, 'Guy', 'Manson', 'M', '2021-11-13'),
+(1, 3, 'Jennifer', 'Lawful', 'F', '2021-12-11'),
+(1, 4, 'Stephanie', 'Smith', 'M', '2021-11-01'),
+(1, 1, 'Pamela', 'Beasley', 'F', '2022-01-04');
 
+select * from Employee
+-- delete from Employee
+-- DBCC CHECKIDENT ('Employee', reseed, 0);
 
 insert into RoomType
 (Capacity, PricePerNight) values 
@@ -46,30 +53,36 @@ insert into Board
 
 select * from Board;
 
+-- Room capacity is 3,
 insert into Reservation
 (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
-(1, 2, 1, '2021-09-05', '2022-09-10', 2),
-(1, 1, 1, '2022-02-02', '2022-02-05', 3),
+(1, 2, 1, '2021-09-05', '2021-09-10', 2),
+(4, 1, 1, '2022-02-02', '2022-02-05', 3),
 (1, 2, 3, '2022-09-08', '2022-09-13', 1),
-(3, 2, 2,'2022-03-09', '2022-03-14', 5),
-(2, 1, 4, '2022-04-12', '2022-04-22', 2);
+(3, 2, 2,'2022-03-09', '2022-03-14', 2),
+(2, 1, 4, '2022-04-12', '2022-04-22', 2),
+(2, 1, 4, '2022-09-08', '2022-09-22', 1);
 
 select * from Reservation
 delete from Reservation
 DBCC CHECKIDENT ('Reservation', reseed, 0);
-select * from TestDate
-delete from TestDate
 
 insert into Bill
 (ReservationID, PaymentType, PaymentDate) values 
-(1, 'Card', '2022-04-10 12:00'),
+(1, 'Card', '2021-04-10 12:00'),
 (2, 'Card', '2022-01-28 19:23'),
-(3, 'Cash', '2022-02-01 13:23');
+(3, 'Cash', null),
+(4, 'Card', '2022-02-28 13:23'),
+(5, 'Cash', '2022-03-12 13:23');
 
 select * from Bill
-delete from Bill
+-- delete from Bill
 
 
 
+select * from Reservation
 
+update Reservation
+set BoardID = 20
+where ReservationID = 18
 
