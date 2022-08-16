@@ -2,11 +2,8 @@ use HotelDatabase;
 
 --TODO Checknout ať ty error čísla dávaj smysl nebo jestli je to jedno
 
---TODO Možná ten bill tvořit automaticky s rezervací?
-  -- V insertu do reservation budu muset specificovat TypeOfPayment a pak to předat
-  -- A PaymentDate prostě dám teď
 
--- Trigger calculating after insert, how much will the room 
+-- Trigger on Bill calculating, how much will the room 
 -- and the board cost (for the entire stay)
 create trigger aft_ins_Bill_calculate_charge 
   on Bill 
@@ -61,6 +58,47 @@ go;
 
 select * from Board
 drop trigger aft_ins_Bill_calculate_charge;
+
+select * from Bill;
+select * from Reservation;
+
+
+delete from Bill where 
+ReservationID = 2;
+
+
+-- Trigger creates a Bill for each new reservation
+create trigger aft_ins_Reservation_create_bill  
+  on Reservation  
+    for insert, update
+as
+  declare @InsertedReservationID int
+
+  declare MyCursor cursor for 
+  select ReservationID
+  from Inserted
+
+  open MyCursor 
+  fetch next from MyCursor into @InsertedReservationID
+
+  while @@FETCH_STATUS = 0
+  begin
+    -- If this triggers after an update, we need to replace the existing bill
+    -- For that, first delete the existing bill with current ReservationID
+    delete from Bill where 
+    ReservationID = @InsertedReservationID
+
+    -- Create new bill, with current Reservations ID and current_timestamp
+    insert into Bill
+    (ReservationID, PaymentDate) values
+    (@InsertedReservationID, CURRENT_TIMESTAMP)
+
+
+    fetch next from MyCursor into @InsertedReservationID
+  end
+
+  close MyCursor
+go;
 
 
 -- Trigger will check whether the reserved room is free during the reserving dates
