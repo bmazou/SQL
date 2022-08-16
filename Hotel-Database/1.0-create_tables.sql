@@ -9,7 +9,7 @@ Each Hotel has its Employees, that have their JobType (i.e. receptionist, room s
 
 Each Hotel also has Rooms, that also have their RoomType (max capacity and how much they cost).
 
-Guests can make Reservations and choose want Room they want, want type of Board they want (none, half, full, all-inclusive), the time range of their stay, and how many people are coming.
+Guests can make Reservations and choose want Room they want,  want type of Board they want (none, half, full, all-inclusive), the time range of their stay, and how many people are coming.
 
 Guests need to be registered in the database before making a reservation.
 
