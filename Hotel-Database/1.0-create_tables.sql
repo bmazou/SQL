@@ -1,5 +1,9 @@
 use HotelDatabase;
 
+
+-- Guests need to be registered in the database before making a reservation
+
+
 create table JobType (
   JobTypeID int identity(1,1)
     constraint JobType_PK primary key,
@@ -124,7 +128,7 @@ select * from Reservation;
 create table Bill (
   BillID bigint identity(1,1)
     constraint Bill_PK primary key,
-  ReservationID int not null
+  ReservationID bigint not null
     constraint Bill_FK_Reservation references Reservation(ReservationID)
       on delete cascade,
   PaymentDate datetime,   -- if null, the bill hasn't been payed yet
