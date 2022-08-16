@@ -1,17 +1,24 @@
 use HotelDatabase;
 
+/*
+For reference, the schema is drawn out in the 'schema.jpg' file.
 
--- Guests need to be registered in the database before making a reservation
+The database is of a hotel chain, currently starting with a single hotel, trying to expand and add more locations in the future.
 
+Each Hotel has its Employees, that have their JobType (i.e. receptionist, room service etc.).
 
-create table JobType (
-  JobTypeID int identity(1,1)
-    constraint JobType_PK primary key,
-  Name nvarchar(50) not null,
-  MontlySalary decimal(11,2) not null  
-);
+Each Hotel also has Rooms, that also have their RoomType (max capacity and how much they cost).
 
-select * from JobType;
+Guests can make Reservations and choose want Room they want, want type of Board they want (none, half, full, all-inclusive), the time range of their stay, and how many people are coming.
+
+Guests need to be registered in the database before making a reservation.
+
+The database checks, whether the chosen Room is free during desired period of the stay. It also checks that the number of guests coming doesn't exceed the rooms capacity.
+
+After a Reservation is created, the database automatically generates a Bill linked to the Reservation, while calculating how much the total stay will cost, depending on the length of stay, chosen Room, and chosen Board.
+Guests can also delete or change their reservations.
+*/
+
 
 create table Hotel (
   HotelID int identity(1,1) 
@@ -22,12 +29,25 @@ create table Hotel (
   PostCode varchar(50) not null,
   City nvarchar(50) not null,
   Country nvarchar(50) not null,
-  StarRating int not null,
-    constraint Hotel_U_Address unique (Address, PostCode, City, Country) 
+  StarRating smallint not null
+    constraint Hotel_CHK_StarRating 
+      check (StarRating in (1,2,3,4,5)),
+  -- Two hotels can't be at the same location
+  constraint Hotel_U_Address unique (Address, PostCode, City, Country) 
 );
 
-
 select * from Hotel;
+
+
+create table JobType (
+  JobTypeID int identity(1,1)
+    constraint JobType_PK primary key,
+  Name nvarchar(50) not null,
+  MonthlySalary decimal(11,2) not null  
+);
+
+select * from JobType;
+
 
 create table Employee (
   EmployeeID int identity(1,1) 
@@ -42,7 +62,7 @@ create table Employee (
   LastName nvarchar(50) not null,
   Gender char(1) not null
     constraint Employee_CHK_Gender 
-      check (Gender in ('M','F','O')), 
+      check (Gender in ('M','F','O')), -- Male/Female/Other 
   Started date not null
 );
 
@@ -91,6 +111,7 @@ create table Guest (
 
 select * from Guest;
 
+
 create table Board (
   BoardID int identity(1,1)
     constraint Board_PK primary key,
@@ -125,6 +146,7 @@ create table Reservation (
 
 select * from Reservation;
 
+
 create table Bill (
   BillID bigint identity(1,1)
     constraint Bill_PK primary key,
@@ -132,8 +154,8 @@ create table Bill (
     constraint Bill_FK_Reservation references Reservation(ReservationID)
       on delete cascade,
   PaymentDate datetime,   -- if null, the bill hasn't been payed yet
-  RoomCharge decimal(11,2),
-  BoardCharge decimal(11,2)
-);
+  RoomCharge decimal(11,2),  -- How much the room costs
+  BoardCharge decimal(11,2)  -- How much the board costs
+);  
 
 select * from Bill
