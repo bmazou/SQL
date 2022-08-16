@@ -56,10 +56,6 @@ as
   close BillCursor
 go;
 
-select * from Board
-
-select * from Bill;
-select * from Reservation;
 
 
 -- Trigger creates a Bill for each new reservation
@@ -143,7 +139,6 @@ as
   close ReservationCursor
 go;
 
-select * from Reservation;
 
 
 -- Check that the number of guests in a reservation doesn't exceed the room capacity

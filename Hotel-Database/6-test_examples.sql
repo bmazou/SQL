@@ -45,16 +45,36 @@ exec ChangeReservationRoom 23908, 1;
 -- Nonexistent RoomID
 exec ChangeReservationRoom 2, 9843;
 -- Change shouldn't pass because of date overlap with other reservations (handled by a trigger)
-exec ChangeReservationRoom 6, 1
+exec ChangeReservationRoom 6, 1;
 -- Correct use
-exec ChangeReservationRoom 6, 4
+exec ChangeReservationRoom 6, 4;
 
 -- Change doesn't pass - date overlap with other reservation
-exec ChangeReservationDates 3, '2021-09-02', '2021-09-12'
+exec ChangeReservationDates 3, '2021-09-02', '2021-09-12';
 -- Correct use
-exec ChangeReservationDates 4, '2023-09-08', '2023-11-23'
-
+exec ChangeReservationDates 4, '2023-09-08', '2023-11-23';
 
 -- Print the total cost of bill 4
-print dbo.bill_total(4)
+print dbo.bill_total(4);
 
+
+--* Try out different views
+select * from vwEmployeeInfo;
+
+select * 
+from vwGuestSpendeture 
+order by TotalPayed desc;
+
+select * 
+from vwHotelEmployeeExpenditure
+order by JobTotalExpenditure;
+
+select * from vwExpenditureByHotel; 
+
+select * 
+from vwRoomTypeUsage
+order by NumberOfReservations desc;
+
+select * 
+from vwBoardPopularity
+order by TimesTaken desc;

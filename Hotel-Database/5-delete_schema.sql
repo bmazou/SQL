@@ -4,7 +4,7 @@ use HotelDatabase
 drop view vwEmployeeInfo;
 drop view vwGuestSpendeture;
 drop view vwHotelEmployeeExpenditure;
-drop view vwRoomUsage;  
+drop view vwRoomTypeUsage;  
 drop view vwBoardPopularity;
 drop view vwExpenditureByHotel;
 

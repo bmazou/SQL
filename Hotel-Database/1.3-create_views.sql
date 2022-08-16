@@ -50,7 +50,7 @@ create view vwExpenditureByHotel as
 
 
 -- View showing information about types of rooms and how much each type is used
-create view vwRoomUsage as
+create view vwRoomTypeUsage as
   select rt.*, Count(1) as NumberOfReservations
   from Reservation as res
     join room as r 

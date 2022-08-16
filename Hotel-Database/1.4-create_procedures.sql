@@ -10,7 +10,6 @@ as
   from vwHotelEmployeeExpenditure
 go;
 
-select * from Reservation;
 
 
 create procedure CreateReservation
