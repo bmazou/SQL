@@ -101,7 +101,7 @@ select * from Board;
 
 
 create table Reservation (
-  ReservationID int identity(1,1)
+  ReservationID bigint identity(1,1)
     constraint Reservation_PK primary key,
   RoomID int not null
     constraint Reservation_FK_Room references Room(RoomID)
@@ -122,18 +122,14 @@ create table Reservation (
 select * from Reservation;
 
 create table Bill (
-  BillID int identity(1,1)
+  BillID bigint identity(1,1)
     constraint Bill_PK primary key,
   ReservationID int not null
     constraint Bill_FK_Reservation references Reservation(ReservationID)
       on delete cascade,
-  PaymentType char(4) not null
-    constraint Bill_CHK_PaymentType
-      check (PaymentType in ('Cash', 'Card')),
   PaymentDate datetime,   -- if null, the bill hasn't been payed yet
   RoomCharge decimal(11,2),
   BoardCharge decimal(11,2)
 );
 
-
-
+select * from Bill

@@ -3,7 +3,7 @@ use HotelDatabase;
 -- Changes PaymentDate in Bill table of BillID row, to current timestamp
 -- If Bill is already payed or desired row doesn't exist, it throws an error
 create procedure PayBill
-  @BillID int
+  @BillID bigint
 as 
   declare @ErrorMessage nvarchar(255)
   -- Check if the row, where bill isn't yet payed, exists
@@ -69,7 +69,7 @@ go;
 
 
 create procedure ChangeReservationRoom
-  @ReservationID int,
+  @ReservationID bigint,
   @DesiredRoomID int
 as
   declare @ErrorMessage nvarchar(255)
@@ -98,7 +98,7 @@ go;
 
 
 create procedure ChangeReservationDates
-  @ReservationID int,
+  @ReservationID bigint,
   @DesiredStartDate date,
   @DesiredEndDate date
 as

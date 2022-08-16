@@ -11,8 +11,8 @@ create trigger aft_ins_Bill_calculate_charge
 as
   declare @RoomCharge decimal(11,2)
   declare @BoardCharge decimal(11,2)
-  declare @BillID int
-  declare @ReservationID int
+  declare @BillID bigint
+  declare @ReservationID bigint
 
   declare BillCursor cursor for
   select BillID, ReservationID
@@ -57,14 +57,9 @@ as
 go;
 
 select * from Board
-drop trigger aft_ins_Bill_calculate_charge;
 
 select * from Bill;
 select * from Reservation;
-
-
-delete from Bill where 
-ReservationID = 2;
 
 
 -- Trigger creates a Bill for each new reservation
@@ -72,7 +67,7 @@ create trigger aft_ins_Reservation_create_bill
   on Reservation  
     for insert, update
 as
-  declare @InsertedReservationID int
+  declare @InsertedReservationID bigint
 
   declare MyCursor cursor for 
   select ReservationID
@@ -108,11 +103,11 @@ create trigger aft_ins_Res_chk_room_free
 as
   declare @StartDate date
   declare @EndDate date
-  declare @InsertedReservationID int
+  declare @InsertedReservationID bigint
   declare @InsertedRoomID int
   declare @InsertedStartDate date
   declare @InsertedEndDate date
-  declare @ConflictingReservationID int
+  declare @ConflictingReservationID bigint
 
   declare ReservationCursor cursor for
   select ReservationID, RoomID, StartDate, EndDate
@@ -138,8 +133,8 @@ as
     begin
       ROLLBACK TRANSACTION
       declare @ErrorMessage nvarchar(255)
-      set @ErrorMessage = N'Error at reservation: ' + cast(@InsertedReservationID as varchar(12)) + '. Room is already reserved during desired time';
-      THROW 60000, @ErrorMessage, 0;
+      set @ErrorMessage = N'Error at reservation: ' + cast(@InsertedReservationID as varchar(12)) + '. Room is already reserved during desired time'
+      ;THROW 60000, @ErrorMessage, 0
     end
 
     fetch next from ReservationCursor into @InsertedReservationID, @InsertedRoomID, @InsertedStartDate, @InsertedEndDate;
@@ -148,7 +143,6 @@ as
   close ReservationCursor
 go;
 
-drop trigger aft_ins_Res_chk_room_free;
 select * from Reservation;
 
 
@@ -157,7 +151,7 @@ create trigger aft_ins_Res_chk_enough_capacity
   on Reservation
     for insert, update
 as
-  declare @InsertedReservationID int
+  declare @InsertedReservationID bigint
   declare @InsertedNumOfGuests int
   declare @RoomCapacity int
 
