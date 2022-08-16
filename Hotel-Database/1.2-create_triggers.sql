@@ -184,5 +184,4 @@ as
   close MyCursor
 go;
 
-drop trigger aft_ins_Res_chk_enough_capacity;
 

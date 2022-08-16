@@ -1,31 +1,5 @@
 use HotelDatabase;
 
--- Changes PaymentDate in Bill table of BillID row, to current timestamp
--- If Bill is already payed or desired row doesn't exist, it throws an error
-create procedure PayBill
-  @BillID bigint
-as 
-  declare @ErrorMessage nvarchar(255)
-  -- Check if the row, where bill isn't yet payed, exists
-  declare @ChangedRow bit = 0;
-  if exists (
-      select * from Bill 
-      where BillID = @BillID and PaymentDate is null
-    )
-  begin 
-    set @ChangedRow = 1;
-  end
-
-  update Bill set PaymentDate = CURRENT_TIMESTAMP
-  where BillID = @BillID and PaymentDate is null
-
-  -- If no row was changed, throw an error
-  if @ChangedRow = 0
-  begin
-    set @ErrorMessage = N'Error, the bill with ID ' + cast(@BillID as varchar(10)) + ' does not exist or it has already been payed'
-    ;throw 51000, @ErrorMessage, 0
-  end
-go;
 
 
 -- Takes number of days as input, and returns how much the hotel will spend on employees during that timeframe
@@ -33,8 +7,44 @@ create procedure ProjectedExpenditure
   @Days int
 as 
   select sum(JobTotalExpenditure)/30.41 as DailyExpenditure, @Days as Days, sum(JobTotalExpenditure) /30.41  * @Days as TotalExpenditure
-  from HotelEmployeeExpenditure
+  from vwHotelEmployeeExpenditure
 go;
+
+select * from Reservation;
+
+
+create procedure CreateReservation
+  @RoomID int,
+  @GuestID int,
+  @BoardID int,
+  @StartDate date,
+  @EndDate date,
+  @NumOfGuests int
+as
+  insert into Reservation
+  (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
+  (@RoomID, @GuestID, @BoardID, @StartDate, @EndDate, @NumOfGuests)
+
+go;
+
+create procedure DeleteReservation
+  @ReservationID bigint
+as
+  declare @ErrorMessage nvarchar(255)
+
+  if @ReservationID not in (
+    select ReservationID 
+    from Reservation)
+  begin
+    set @ErrorMessage = N'Error, the Reservation with ID ' + cast(@ReservationID as varchar(10)) + ' does not exist'
+    ;throw 51000, @ErrorMessage, 0
+  end
+
+  delete 
+  from Reservation 
+  where ReservationID = @ReservationID
+go;
+
 
 
 create procedure ChangeReservationBoard
@@ -117,7 +127,6 @@ as
   where ReservationID = @ReservationID
 go;
 
-select * from Reservation
 
 
 
@@ -135,8 +144,3 @@ as
   end
 go;
 
-drop function BillTotal
-
-print dbo.bill_total(5)
-
-select * from Bill

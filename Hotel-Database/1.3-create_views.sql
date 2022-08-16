@@ -3,7 +3,7 @@ use HotelDatabase;
 
 
 -- View giving information about Employees, their salary and what hotel they work in
-create view EmployeeInfo as
+create view vwEmployeeInfo as
   select h.Name as HotelName, concat(e.FirstName, ' ', e.LastName) as EmployeeFullName, jt.MontlySalary
   from Hotel as h
     join Employee as e
@@ -16,7 +16,7 @@ select * from EmployeeInfo
 
 -- View showing guests, how many reservations they made, 
 -- and how much they spent in total
-create view CustomerSpendeture as
+create view vwGuestSpendeture as
   select g.GuestID as GuestID, Concat(g.FirstName, ' ', g.LastName) as FullName, Count(1) as TotalReservations, Sum(b.RoomCharge) + Sum(b.BoardCharge) as TotalPayed
   from Guest as g
     join Reservation as res
@@ -30,7 +30,7 @@ select * from CustomerSpendeture;
 
 -- View showing how many employees of a given type the hotel chain has,
 -- and much it spends on each category
-create view HotelEmployeeExpenditure as
+create view vwHotelEmployeeExpenditure as
   select jt.Name as JobName, avg(jt.MontlySalary) as JobMontlySalary, Count(1) as NumberOfEmployees, sum(jt.MontlySalary) as JobTotalExpenditure
   from JobType as jt
     join Employee as e
@@ -38,8 +38,37 @@ create view HotelEmployeeExpenditure as
   group by jt.Name;
 
 
-select * from HotelEmployeeExpenditure;
-drop view HotelEmployeeExpenditure;
+-- Show how much each hotel spends on employees per month
+  -- (Currently only 1 hotel in the database)
+create view vwExpenditureByHotel as
+  select h.HotelName, Sum(jt.MontlySalary) as MonthlyExpenditure
+  from Employee as e
+    left join JobType as jt
+      on e.JobTypeID = jt.JobTypeID
+    join Hotel as h
+      on e.HotelID = h.HotelID
+  group by h.Name;
 
-select sum(JobTotalExpenditure) as TotalExpenditure
-from HotelEmployeeExpenditure
+select * from vwExpenditureByHotel 
+
+
+-- View showing information about types of rooms and how much each type is used
+create view vwRoomUsage as
+  select rt.*, Count(1) as NumberOfReservations
+  from Reservation as res
+    join room as r 
+      on res.RoomID = r.RoomID
+    join RoomType as rt
+      on r.RoomTypeID = rt.RoomTypeID
+  group by rt.RoomTypeID, rt.Capacity, rt.PricePerNight
+
+
+-- Show how much each board type was taken
+create view vwBoardPopularity as
+  select b.*, sum(res.NumOfGuests) as TimesTaken
+  from Board as b
+    join Reservation as res
+      on res.BoardID = b.BoardID
+  group by b.BoardID, b.Type, b.PricePerDay
+
+
