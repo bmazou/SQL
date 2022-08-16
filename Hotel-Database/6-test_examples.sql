@@ -37,6 +37,9 @@ exec ChangeReservationBoard 1, 'Nooone';
 -- Correct use
 exec ChangeReservationBoard 2, 'All Inclusive';
 
+-- select * from Reservation;
+-- select * from Bill
+
 -- Nonexistent ReservationID
 exec ChangeReservationRoom 23908, 1;
 -- Nonexistent RoomID
@@ -49,9 +52,9 @@ exec ChangeReservationRoom 6, 4
 -- Change doesn't pass - date overlap with other reservation
 exec ChangeReservationDates 3, '2021-09-02', '2021-09-12'
 -- Correct use
-exec ChangeReservationDates 5, '2023-09-08', '2023-11-23'
+exec ChangeReservationDates 4, '2023-09-08', '2023-11-23'
 
 
--- Print the total cost of bill 5
-print dbo.bill_total(3)
+-- Print the total cost of bill 4
+print dbo.bill_total(4)
 

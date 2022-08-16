@@ -11,7 +11,7 @@ on Employee(JobTypeID);
 create index IDX_RoomHotelID  
 on Room(HotelID);
 
-create index IDX_EmployeeRoomTypeID 
+create index IDX_RoomRoomTypeID 
 on Room(RoomTypeID);
 
 create index IDX_ReservationRoomID  

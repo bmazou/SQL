@@ -5,7 +5,7 @@ insert into Hotel values
 ('Creaky Cabin', 'Legion Rd 24', '47006', 'Ballstown, Indiana', 'USA', 2);
 
 insert into JobType 
-(Name, MontlySalary) values
+(Name, MonthlySalary) values
 ('Reception', 2500),
 ('Janitor', 1800),
 ('Room Service', 2200),
@@ -67,13 +67,3 @@ insert into Reservation
 
 select * from Reservation
 select * from Bill
--- delete from Reservation
--- DBCC CHECKIDENT ('Reservation', reseed, 0);
-
--- insert into Bill
--- (ReservationID, PaymentType, PaymentDate) values 
--- (1, 'Card', '2021-04-10 12:00'),
--- (2, 'Card', '2022-01-28 19:23'),
--- (3, 'Cash', null),
--- (4, 'Card', '2022-02-28 13:23'),
--- (5, 'Cash', '2022-03-12 13:23');

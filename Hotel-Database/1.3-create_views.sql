@@ -4,14 +4,13 @@ use HotelDatabase;
 
 -- View giving information about Employees, their salary and what hotel they work in
 create view vwEmployeeInfo as
-  select h.Name as HotelName, concat(e.FirstName, ' ', e.LastName) as EmployeeFullName, jt.MontlySalary
+  select h.Name as HotelName, concat(e.FirstName, ' ', e.LastName) as EmployeeFullName, jt.MonthlySalary
   from Hotel as h
     join Employee as e
       on h.HotelID = e.HotelID
     join JobType as jt
       on e.JobTypeID = jt.JobTypeID;
 
-select * from EmployeeInfo
 
 
 -- View showing guests, how many reservations they made, 
@@ -25,13 +24,12 @@ create view vwGuestSpendeture as
       on res.ReservationID = b.ReservationID
   group by g.GuestID, Concat(g.FirstName, ' ', g.LastName);
 
-select * from CustomerSpendeture;
 
 
 -- View showing how many employees of a given type the hotel chain has,
 -- and much it spends on each category
 create view vwHotelEmployeeExpenditure as
-  select jt.Name as JobName, avg(jt.MontlySalary) as JobMontlySalary, Count(1) as NumberOfEmployees, sum(jt.MontlySalary) as JobTotalExpenditure
+  select jt.Name as JobName, avg(jt.MonthlySalary) as JobMonthlySalary, Count(1) as NumberOfEmployees, sum(jt.MonthlySalary) as JobTotalExpenditure
   from JobType as jt
     join Employee as e
       on e.JobTypeID = jt.JobTypeID
@@ -41,7 +39,7 @@ create view vwHotelEmployeeExpenditure as
 -- Show how much each hotel spends on employees per month
   -- (Currently only 1 hotel in the database)
 create view vwExpenditureByHotel as
-  select h.HotelName, Sum(jt.MontlySalary) as MonthlyExpenditure
+  select h.Name, Sum(jt.MonthlySalary) as MonthlyExpenditure
   from Employee as e
     left join JobType as jt
       on e.JobTypeID = jt.JobTypeID
@@ -49,7 +47,6 @@ create view vwExpenditureByHotel as
       on e.HotelID = h.HotelID
   group by h.Name;
 
-select * from vwExpenditureByHotel 
 
 
 -- View showing information about types of rooms and how much each type is used
