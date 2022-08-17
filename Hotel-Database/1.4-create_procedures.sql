@@ -2,7 +2,7 @@ use HotelDatabase;
 
 
 
--- Takes number of days as input, and returns how much the hotel will spend on employees during that timeframe
+-- Takes number of days as input, and shows how much the hotel will spend on employees during that timeframe
 create procedure ProjectedExpenditure
   @Days int
 as 
@@ -25,6 +25,8 @@ as
   (@RoomID, @GuestID, @BoardID, @StartDate, @EndDate, @NumOfGuests)
 
 go;
+
+
 
 create procedure DeleteReservation
   @ReservationID bigint
@@ -61,7 +63,7 @@ as
     ;throw 51000, @ErrorMessage, 0;
   end
 
-  if @DesiredBoardType not in ('Full', 'Half', 'None', 'All Inclusive')
+  if @DesiredBoardType not in ('Full', 'Half', 'None', 'All Inclusive') -- Only 4 types of board
   begin
     set @ErrorMessage = N'The board type must be either None, Half, Full or All Inclunsive'
     ;throw 51000, @ErrorMessage, 0;
@@ -128,7 +130,6 @@ go;
 
 
 
-
 create procedure ChangeReservationDates
   @ReservationID bigint,
   @DesiredStartDate date,
@@ -162,9 +163,6 @@ as
 go;
 
 
-
-
-select * from guest 
 
 -- Function calculating total cost of a bill, given a BillID
 create function bill_total (@BillID int)

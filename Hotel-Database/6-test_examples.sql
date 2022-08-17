@@ -3,12 +3,12 @@ use HotelDatabase;
 
 --* Trigger testing
 
--- Test trigger - insert reservation with 5 guests and room with capacity of 2
+-- Test trigger - try to insert reservation with 5 guests and room with capacity of 2
 insert into Reservation
 (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
 (3, 1, 1, '2100-09-05', '2100-09-10', 5);
 
--- Test trigger - insert reservation of room during already reserved time
+-- Test trigger - try to insert reservation during already reserved time
 insert into Reservation
 (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
 (4, 1, 1, '2022-02-01', '2022-02-09', 1);

@@ -37,7 +37,6 @@ create view vwHotelEmployeeExpenditure as
 
 
 -- Show how much each hotel spends on employees per month
-  -- (Currently only 1 hotel in the database)
 create view vwExpenditureByHotel as
   select h.Name, Sum(jt.MonthlySalary) as MonthlyExpenditure
   from Employee as e
@@ -60,7 +59,7 @@ create view vwRoomTypeUsage as
   group by rt.RoomTypeID, rt.Capacity, rt.PricePerNight
 
 
--- Show how many times each board type has been taken (per guest * how long they stayed)
+-- Show how many times each board type has been taken (per num_of_guests*how_long_they_stayed)
 create view vwBoardPopularity as
   select b.*, sum(res.NumOfGuests*DATEDIFF(day, res.StartDate, res.EndDate)) as DaysTaken
   from Board as b
@@ -68,6 +67,3 @@ create view vwBoardPopularity as
       on res.BoardID = b.BoardID
   group by b.BoardID, b.Type, b.PricePerDay
 
-drop view vwBoardPopularity
-
-select * from Reservation

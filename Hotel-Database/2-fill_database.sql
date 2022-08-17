@@ -49,9 +49,12 @@ insert into Guest
 ('Jana', 'Ratu', null, '908312322'),
 ('Jacob', 'Mountainous', 'jacomou@gmail.com', null),
 ('Simon', 'Morveer', null, '312049298'),
-('Caul', 'Shivers', null, '5581331232');
+('Caul', 'Shivers', null, '558133132');
 
 select * from Guest
+
+
+
 
 
 insert into Board
@@ -83,6 +86,7 @@ insert into Reservation
 (2, 3, 2, '2022-12-02', '2022-12-09', 2),
 (3, 4, 2, '2022-12-02', '2022-12-09', 2),
 (4, 5, 2, '2022-12-02', '2022-12-09', 1);
+
 
 select * from Reservation;
 select * from Bill;

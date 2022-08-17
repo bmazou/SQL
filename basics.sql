@@ -50,3 +50,9 @@ from Purchasing.PurchaseOrderDetail pod
 
 delete from Employee
 DBCC CHECKIDENT ('Employee', reseed, 0);
+
+delete from Guest
+DBCC CHECKIDENT ('Guest', reseed, 0);
+
+delete from Reservation
+DBCC CHECKIDENT ('Reservation', reseed, 0);

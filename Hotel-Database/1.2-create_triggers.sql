@@ -1,7 +1,5 @@
 use HotelDatabase;
 
---TODO Checknout ať ty error čísla dávaj smysl nebo jestli je to jedno
-
 
 -- Trigger on Bill calculating, how much will the room 
 -- and the board cost (for the entire stay)
@@ -24,7 +22,6 @@ as
   while @@FETCH_STATUS = 0
   begin
     -- For clarity, the selects and updates are separated
-    --TODO Můžu ty dva statementy dát do jednoho
 
     -- Calculate how much the room will cost for the entire stay
     select @RoomCharge = datediff(day, res.StartDate, res.EndDate) * rt.PricePerNight
@@ -58,7 +55,7 @@ go;
 
 
 
--- Trigger creates a Bill for each new reservation
+-- Trigger creates a Bill for linked to a new reservation
 create trigger aft_ins_Reservation_create_bill  
   on Reservation  
     for insert, update
@@ -115,15 +112,15 @@ as
   while @@FETCH_STATUS = 0
   begin
     if exists (
-      -- Looks at reservations reserving same room as inserted reservation
-      -- If reservation dates conflict, it selects
+      -- Looks at reservations that reserve same room as the inserted reservation
+      -- If reservation dates conflict, it triggers, and we can rollback the transaction
       select *
       from Reservation
       where ReservationID <> @InsertedReservationID and -- Not the same resarvation 
         RoomID = @InsertedRoomID and ( -- Same room 
         @InsertedStartDate between StartDate and EndDate or -- InsertedStartDate is between dates of some reservation 
         @InsertedEndDate between StartDate and EndDate or -- InsertedEndDate is between dates of some reservation 
-        (@InsertedStartDate < StartDate and @InsertedEndDate > EndDate) -- Some reservation is between InsertedDates
+        (@InsertedStartDate < StartDate and @InsertedEndDate > EndDate) -- Some reservation is between the InsertedDates
         )
     )
     begin
@@ -165,6 +162,7 @@ as
 
   while @@FETCH_STATUS = 0
   begin
+    -- If more guests are coming than can be fit in a room, rollback
     if @InsertedNumOfGuests > @RoomCapacity
     begin
       ROLLBACK TRANSACTION
