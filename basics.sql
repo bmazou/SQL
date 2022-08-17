@@ -46,3 +46,7 @@ select pod.PurchaseOrderID, pod. PurchaseOrderDetailId, poh.OrderDate
 from Purchasing.PurchaseOrderDetail pod
     inner join Purchasing.PurchaseOrderHeader poh
         on pod.PurchaseOrderID = poh.PurchaseOrderID
+
+
+delete from Employee
+DBCC CHECKIDENT ('Employee', reseed, 0);
