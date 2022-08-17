@@ -54,6 +54,14 @@ exec ChangeReservationDates 3, '2021-09-02', '2021-09-12';
 -- Correct use
 exec ChangeReservationDates 4, '2023-09-08', '2023-11-23';
 
+-- Changing number of guests coming
+exec ChangeReservationNumOfGuests 4, 1;
+
+
+-- Inserting new guest
+exec NewGuest 'Andrew', 'Green', null, '123456789'
+
+
 -- Print the total cost of bill 4
 print dbo.bill_total(4);
 
@@ -77,4 +85,4 @@ order by NumberOfReservations desc;
 
 select * 
 from vwBoardPopularity
-order by TimesTaken desc;
+order by DaysTaken desc;

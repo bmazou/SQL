@@ -22,8 +22,10 @@ drop procedure CreateReservation;
 drop procedure ChangeReservationRoom;
 drop procedure ChangeReservationDates;
 drop procedure DeleteReservation;
+drop procedure ChangeReservationNumOfGuests;
+drop procedure NewGuest;
 
-drop function bill_total
+drop function bill_total;
 
 
 --* Indexes
@@ -56,6 +58,7 @@ on Guest;
 
 drop index IDX_EmployeeFullName
 on Employee;
+
 
 --* Tables
 drop table Employee;

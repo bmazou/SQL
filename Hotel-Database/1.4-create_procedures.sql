@@ -106,6 +106,29 @@ as
 go;
 
 
+create procedure ChangeReservationNumOfGuests
+  @ReservationID bigint,
+  @NumOfGuests int
+as
+  declare @ErrorMessage nvarchar(255)
+
+  if @ReservationID not in (
+    select ReservationID 
+    from Reservation)
+  begin
+    set @ErrorMessage = N'Error, the Reservation with ID ' + cast(@ReservationID as varchar(10)) + ' does not exist'
+    ;throw 51000, @ErrorMessage, 0;
+  end
+
+  update Reservation
+  set NumOfGuests = @NumOfGuests
+  where ReservationID = @ReservationID
+go;
+
+
+
+
+
 create procedure ChangeReservationDates
   @ReservationID bigint,
   @DesiredStartDate date,
@@ -127,7 +150,21 @@ as
 go;
 
 
+create procedure NewGuest
+  @FirstName nvarchar(50),
+  @LastName nvarchar(50),
+  @Email nvarchar(50),
+  @Phone char(9)
+as
+  insert into Guest 
+  (FirstName, LastName, Email, Phone) values
+  (@FirstName, @LastName, @Email, @Phone)
+go;
 
+
+
+
+select * from guest 
 
 -- Function calculating total cost of a bill, given a BillID
 create function bill_total (@BillID int)

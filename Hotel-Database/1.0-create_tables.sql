@@ -3,11 +3,11 @@ use HotelDatabase;
 /*
 For reference, the schema is drawn out in the 'schema.jpg' file.
 
-The database is of a hotel chain, currently starting with a single hotel, trying to expand and add more locations in the future.
+The database is of a hotel chain, currently starting with a single small hotel, trying to expand and add more locations in the future.
 
 Each Hotel has its Employees, that have their JobType (i.e. receptionist, room service etc.).
 
-Each Hotel also has Rooms, that also have their RoomType (max capacity and how much they cost).
+Each Hotel also has Rooms, that also have their RoomType (maximum capacity and how much they cost).
 
 Guests can make Reservations and choose want Room they want,  want type of Board they want (none, half, full, all-inclusive), the time range of their stay, and how many people are coming.
 

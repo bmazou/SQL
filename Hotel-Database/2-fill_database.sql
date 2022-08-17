@@ -1,7 +1,8 @@
 use HotelDatabase;
 
 
-insert into Hotel values 
+insert into Hotel 
+(Name, Address, PostCode, City, Country, StarRating) values 
 ('Creaky Cabin', 'Legion Rd 24', '47006', 'Ballstown, Indiana', 'USA', 2);
 
 insert into JobType 
@@ -20,8 +21,7 @@ insert into Employee
 (1, 1, 'Pamela', 'Beasley', 'F', '2022-01-04');
 
 select * from Employee
--- delete from Employee
--- DBCC CHECKIDENT ('Employee', reseed, 0);
+
 
 insert into RoomType
 (Capacity, PricePerNight) values 
@@ -34,17 +34,25 @@ insert into Room
 (HotelID, RoomTypeID) values 
 (1,1),
 (1,1),
+(1,1),
+(1,2),
+(1,2),
 (1,2),
 (1,3);
 
 select * from Room;
 
+
 insert into Guest
 (FirstName, LastName, Email, Phone) values 
 ('Jasmine', 'Maurice', 'JM@gmail.com', null),
-('Jana', 'Ratu', null, '908312322');
+('Jana', 'Ratu', null, '908312322'),
+('Jacob', 'Mountainous', 'jacomou@gmail.com', null),
+('Simon', 'Morveer', null, '312049298'),
+('Caul', 'Shivers', null, '5581331232');
 
 select * from Guest
+
 
 insert into Board
 (Type, PricePerDay) values
@@ -59,11 +67,22 @@ select * from Board;
 insert into Reservation
 (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
 (1, 2, 1, '2021-09-05', '2021-09-10', 2),
-(4, 1, 1, '2022-02-02', '2022-02-05', 3),
+(4, 1, 1, '2022-02-02', '2022-02-05', 2),
 (1, 2, 3, '2022-09-08', '2022-09-13', 1),
 (3, 2, 2,'2022-03-09', '2022-03-14', 2),
 (2, 1, 4, '2022-04-12', '2022-04-22', 2),
-(2, 1, 4, '2022-09-08', '2022-09-22', 1);
+(2, 1, 4, '2022-09-08', '2022-09-22', 1),
+(5, 3, 3, '2022-09-08', '2022-09-09', 2),
+(6, 3, 3, '2022-10-18', '2022-10-19', 2),
+(6, 4, 1, '2022-09-08', '2022-09-22', 1),
+(7, 1, 4, '2022-02-02', '2022-02-05', 5),
+(7, 5, 2, '2022-12-02', '2022-12-09', 5),
+(4, 5, 3, '2022-08-08', '2022-08-09', 2),
+(5, 3, 3, '2022-09-18', '2022-09-29', 2),
+(1, 2, 2, '2022-12-02', '2022-12-09', 2),
+(2, 3, 2, '2022-12-02', '2022-12-09', 2),
+(3, 4, 2, '2022-12-02', '2022-12-09', 2),
+(4, 5, 2, '2022-12-02', '2022-12-09', 1);
 
-select * from Reservation
-select * from Bill
+select * from Reservation;
+select * from Bill;

@@ -60,12 +60,14 @@ create view vwRoomTypeUsage as
   group by rt.RoomTypeID, rt.Capacity, rt.PricePerNight
 
 
--- Show how much each board type was taken
+-- Show how many times each board type has been taken (per guest * how long they stayed)
 create view vwBoardPopularity as
-  select b.*, sum(res.NumOfGuests) as TimesTaken
+  select b.*, sum(res.NumOfGuests*DATEDIFF(day, res.StartDate, res.EndDate)) as DaysTaken
   from Board as b
     join Reservation as res
       on res.BoardID = b.BoardID
   group by b.BoardID, b.Type, b.PricePerDay
 
+drop view vwBoardPopularity
 
+select * from Reservation
