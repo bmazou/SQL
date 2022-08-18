@@ -52,6 +52,9 @@ on Reservation;
 drop index IDX_ReservationBoardID
 on Reservation;
 
+drop index IDX_ReservationDates
+on Reservation;
+
 drop index IDX_BillReservationID
 on Bill;
 

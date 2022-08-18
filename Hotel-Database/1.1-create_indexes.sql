@@ -36,3 +36,8 @@ on Guest(LastName, FirstName);
 
 create index IDX_EmployeeFullName
 on Employee(LastName, FirstName);
+
+
+-- Index for searching for the daterange of reservations
+create index IDX_ReservationDates
+on Reservation(StartDate, EndDate);
