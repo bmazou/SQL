@@ -63,28 +63,51 @@ create trigger aft_ins_Reservation_create_bill
     for insert, update
 as
   declare @InsertedReservationID bigint
+  declare @InsertedPaymentType char(4)
 
   declare MyCursor cursor for 
-  select ReservationID
+  select ReservationID, PaymentType
   from Inserted
 
   open MyCursor 
-  fetch next from MyCursor into @InsertedReservationID
+  fetch next from MyCursor into @InsertedReservationID, @InsertedPaymentType
 
   while @@FETCH_STATUS = 0
   begin
-    -- If this triggers after an update, we need to replace the existing bill
-    -- For that, first delete the existing bill with current ReservationID
-    delete from Bill where 
-    ReservationID = @InsertedReservationID
+    -- If triggered by an update, we also have to update the coresponding bill
+    -- For that, we can update the bill (and change nothing), to set of its trigger
+    -- The trigger then recalculates possible changes to Room, Board, or Dates made to its reservation
+    if exists (select * from deleted)  -- Detect an update
+    begin
+      update Bill
+      set ReservationID = ReservationID
+      where ReservationID = @InsertedReservationID
+    end
 
-    -- Create new bill, with current Reservations ID and current_timestamp
-    insert into Bill
-    (ReservationID, PaymentDate) values
-    (@InsertedReservationID, CURRENT_TIMESTAMP)
+    else
+    begin
+      -- New reservation was created, so we need to create a new bill for it
+      declare @TimePayed datetime
+      
+      -- If payed by card (during the reservation), insert current time
+      -- into the PaymentDate column inside Bill
+      set @TimePayed = CURRENT_TIMESTAMP
+      
+      -- If PaymentType is cash, insert null, indicating it hasn't been payed yet
+      if @InsertedPaymentType = 'Cash'
+      begin
+        set @TimePayed = null
+      end
 
+      declare @TimePayedRounded datetime
+      set @TimePayedRounded = dateadd(hour, datediff(hour, 0, @TimePayed), 0) -- Round down to the hour
+      
+      insert into Bill
+      (ReservationID, PaymentDate, PaymentDateRounded) values
+      (@InsertedReservationID, @TimePayed, @TimePayedRounded)
+    end
 
-    fetch next from MyCursor into @InsertedReservationID
+    fetch next from MyCursor into @InsertedReservationID, @InsertedPaymentType
   end
 
   close MyCursor

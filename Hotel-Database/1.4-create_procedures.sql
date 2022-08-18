@@ -13,21 +13,47 @@ as
 go;
 
 
+create procedure PayBill
+  @BillID bigint
+as
+  if (select res.PaymentType 
+      from Bill as b
+        join Reservation as res
+          on b.ReservationID = res.ReservationID
+      where BillID = @BillID) = 'Card'
+  begin 
+    declare @ErrorMessage nvarchar(255)
+    set @ErrorMessage = N'Error, the Bill with ID ' + cast(@BillID as varchar(10)) + ' has already been payed'
+    ;throw 51000, @ErrorMessage, 0
+  end
+
+  declare @TimePayed datetime
+  declare @TimePayedRounded datetime
+  set @TimePayed = CURRENT_TIMESTAMP
+  set @TimePayedRounded = dateadd(hour, datediff(hour, 0, @TimePayed), 0) -- Round
+
+  update Bill
+  set PaymentDate = @TimePayed, PaymentDateRounded = @TimePayedRounded
+  where BillID = @BillID
+
+go;
+
+
 
 create procedure CreateReservation
   @RoomID int,
   @GuestID int,
   @BoardID int,
+  @PaymentType char(4),
   @StartDate date,
   @EndDate date,
   @NumOfGuests int
 as
   insert into Reservation
-  (RoomID, GuestID, BoardID, StartDate, EndDate, NumOfGuests) values 
-  (@RoomID, @GuestID, @BoardID, @StartDate, @EndDate, @NumOfGuests)
+  (RoomID, GuestID, BoardID, PaymentType, StartDate, EndDate, NumOfGuests) values 
+  (@RoomID, @GuestID, @BoardID, @PaymentType, @StartDate, @EndDate, @NumOfGuests)
 
 go;
-
 
 
 create procedure DeleteReservation

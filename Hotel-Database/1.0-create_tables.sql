@@ -18,7 +18,9 @@ Guests need to be registered in the database before making a reservation.
 
 The database checks, whether the chosen Room is free during desired period of the stay. It also checks that the number of guests coming doesn't exceed the rooms capacity.
 
-After a Reservation is created, the database automatically generates a Bill linked to the Reservation, while calculating how much the total stay will cost, depending on the length of stay, chosen Room, and chosen Board.
+After a Reservation is created, the database automatically generates a Bill linked to the Reservation, while calculating how much the total stay will cost, depending on the length of stay, chosen Room, and chosen Board. 
+Guests can pay by: a) card, immediately during reservation
+                   b) cash, when they check in into the hotel
 Guests can also delete or change their reservations.
 */
 
@@ -140,6 +142,9 @@ create table Reservation (
   BoardID int not null
     constraint Reservation_FK_Board references Board(BoardID)
       on delete cascade,
+  PaymentType char(4) not null
+    constraint Reservation_CHK_PaymentType
+      check (PaymentType in ('Card', 'Cash')),
   StartDate date not null,
   EndDate date not null,
   NumOfGuests smallint not null,
@@ -149,7 +154,6 @@ create table Reservation (
 
 select * from Reservation;
 
-
 create table Bill (
   BillID bigint identity(1,1)
     constraint Bill_PK primary key,
@@ -157,7 +161,7 @@ create table Bill (
     constraint Bill_FK_Reservation references Reservation(ReservationID)
       on delete cascade,
   PaymentDate datetime,   -- if null, the bill hasn't been payed yet
-  PaymentDateRounded datetime, 
+  PaymentDateRounded datetime, -- time rounded to hour for better indexing 
   RoomCharge decimal(11,2),  -- How much the room costs
   BoardCharge decimal(11,2)  -- How much the board costs
 );  

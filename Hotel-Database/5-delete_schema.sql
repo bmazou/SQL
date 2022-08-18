@@ -26,6 +26,7 @@ drop procedure ChangeReservationDates;
 drop procedure DeleteReservation;
 drop procedure ChangeReservationNumOfGuests;
 drop procedure NewGuest;
+drop procedure PayBill;
 
 drop function bill_total;
 
@@ -63,6 +64,9 @@ on Guest;
 
 drop index IDX_EmployeeFullName
 on Employee;
+
+drop index IDX_BillPaymentDate
+on Bill;
 
 
 --* Tables

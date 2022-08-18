@@ -41,3 +41,8 @@ on Employee(LastName, FirstName);
 -- Index for searching for the daterange of reservations
 create index IDX_ReservationDates
 on Reservation(StartDate, EndDate);
+
+-- Index on rounded datetime, so it doesn't have to account for minutes, seconds, and milliseconds
+create index IDX_BillPaymentDate
+on Bill(PaymentDateRounded);
+
