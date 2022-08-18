@@ -32,7 +32,7 @@ on Bill(ReservationID);
 
 -- Indexes on names, when searching for specific guest or employee by full name
 create index IDX_GuestFullName
-on Guest(FirstName, LastName);
+on Guest(LastName, FirstName);
 
 create index IDX_EmployeeFullName
-on Employee(FirstName, LastName);
+on Employee(LastName, FirstName);
