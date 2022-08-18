@@ -1,4 +1,7 @@
+-- Bedřich Mazourek, LS 2021/22
+
 use HotelDatabase;
+
 
 -- Foreign keys
 
