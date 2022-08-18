@@ -57,7 +57,7 @@ go;
 
 
 
--- Trigger creates a Bill for linked to a new reservation
+-- Trigger creates a Bill linked to a new reservation
 create trigger aft_ins_Reservation_create_bill  
   on Reservation  
     for insert, update
@@ -80,7 +80,7 @@ as
     if exists (select * from deleted)  -- Detect an update
     begin
       update Bill
-      set ReservationID = ReservationID
+      set ReservationID = ReservationID   -- do nothing
       where ReservationID = @InsertedReservationID
     end
 
