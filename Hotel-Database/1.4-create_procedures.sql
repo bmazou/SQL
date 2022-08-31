@@ -28,12 +28,10 @@ as
   end
 
   declare @TimePayed datetime
-  declare @TimePayedRounded datetime
   set @TimePayed = CURRENT_TIMESTAMP
-  set @TimePayedRounded = dateadd(hour, datediff(hour, 0, @TimePayed), 0) -- Round
 
   update Bill
-  set PaymentDate = @TimePayed, PaymentDateRounded = @TimePayedRounded
+  set PaymentDate = @TimePayed
   where BillID = @BillID
 
 go;

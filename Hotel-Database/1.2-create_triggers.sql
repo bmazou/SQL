@@ -98,13 +98,10 @@ as
       begin
         set @TimePayed = null
       end
-
-      declare @TimePayedRounded datetime
-      set @TimePayedRounded = dateadd(hour, datediff(hour, 0, @TimePayed), 0) -- Round down to the hour
       
       insert into Bill
-      (ReservationID, PaymentDate, PaymentDateRounded) values
-      (@InsertedReservationID, @TimePayed, @TimePayedRounded)
+      (ReservationID, PaymentDate) values
+      (@InsertedReservationID, @TimePayed)
     end
 
     fetch next from MyCursor into @InsertedReservationID, @InsertedPaymentType

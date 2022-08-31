@@ -161,7 +161,6 @@ create table Bill (
     constraint Bill_FK_Reservation references Reservation(ReservationID)
       on delete cascade,
   PaymentDate datetime,   -- if null, the bill hasn't been payed yet
-  PaymentDateRounded datetime, -- time rounded to hour for better indexing 
   RoomCharge decimal(11,2),  -- How much the room costs
   BoardCharge decimal(11,2)  -- How much the board costs
 );  
